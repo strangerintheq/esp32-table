@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link href="style.css" rel="stylesheet"> -->
+</head>
+<body>
+    <a href="network.html">network settings</a>
+    <a href="points.html">points</a>
+    <!-- <button onclick="uploadPoints()">upload points</button> -->
+    <pre id="status"></pre>
+    <pre id="points"></pre>
+    <canvas width="500" height="500"></canvas>
+    <!-- <script src="index.js"></script> -->
+    <script>
+        function poll() {
+            fetch('/status', {method: "POST"}).then(res => res.json()).then(state => {
+                document.querySelector("#status").innerHTML = JSON.stringify(state, null , 2);
+            });
+        }
+
+        fetch('/points', {method: "POST"}).then(res => res.json()).then(data => {
+
+            const canvas = document.querySelector("canvas");
+            const ctx = canvas.getContext("2d");
+            
+            const rawPoints = data.points; 
+            if (!rawPoints || rawPoints.length === 0) 
+                return;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const maxRadius = Math.min(cx, cy) - 40; 
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(cx, cy, maxRadius, 0, 2 * Math.PI);
+            ctx.moveTo(cx - maxRadius, cy); ctx.lineTo(cx + maxRadius, cy);
+            ctx.moveTo(cx, cy - maxRadius); ctx.lineTo(cx, cy + maxRadius);
+            ctx.stroke();
+
+            const screenPoints = [];
+
+            for (let i = 0; i < rawPoints.length; i += 2) {
+                const a = rawPoints[i];     // Угол
+                const r = rawPoints[i + 1]; // Радиус
+
+                const drawX = cx + (r * maxRadius) * Math.cos(a);
+                const drawY = cy + (r * maxRadius) * Math.sin(a);
+
+                screenPoints.push({ x: drawX, y: drawY });
+            }
+
+            ctx.strokeStyle = '#2196f3'; 
+            ctx.lineWidth = 1;           
+            ctx.beginPath();
+            
+            if (screenPoints.length > 0) {
+                ctx.moveTo(screenPoints[0].x, screenPoints[0].y);
+                for (let i = 1; i < screenPoints.length; i++) {
+                    ctx.lineTo(screenPoints[i].x, screenPoints[i].y);
+                }
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#ff5722'; 
+            screenPoints.forEach(pt => {
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, 1.5, 0, 2 * Math.PI); 
+                ctx.fill();
+            });
+
+
+        });
+
+        setInterval(poll, 900); 
+        poll();
+    </script>
+</body>
+</html>
