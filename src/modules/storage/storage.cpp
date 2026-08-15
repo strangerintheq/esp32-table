@@ -74,16 +74,19 @@ String readString(String fileName) {
     // Очищаем невидимые пробелы и переносы строк с краев
     result.trim(); 
   
-    Serial.print("Read cfg file ");
-    Serial.print(fileName);
-    Serial.print(" -> ");
-    Serial.print(result);
-    Serial.print("\n");
     return result;
 }
 
-void writeString(String, String) {
+void writeString(String fileName, String newValue) {
+    newValue.trim();
+    File file = LittleFS.open(fileName, "w");
+    if (!file) {
+        Serial.println("Wrror writing parameter: " + fileName);
+        return;
+    }
 
+    file.print(newValue);
+    file.close();
 }
 
 size_t readBinaryFile(

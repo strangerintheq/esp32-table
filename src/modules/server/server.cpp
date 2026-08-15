@@ -17,17 +17,7 @@ void startWebServer() {
 
   restorePoints();
 
-  listDirectory("/site", [](String fileName) {
-      String route = fileName == "index.html" ? "/" : "/" + fileName;
-      server.on(route.c_str(), HTTP_GET, [fileName](AsyncWebServerRequest *request) { 
-        String contentType = "text/html";
-        if (fileName.endsWith(".css")) 
-          contentType = "text/css";
-        else if (fileName.endsWith(".js")) 
-          contentType = "application/javascript";
-        request->send(LittleFS, ("/site/" + fileName).c_str(), contentType); 
-      });    
-  });
+  server.serveStatic("/", LittleFS, "/site/").setDefaultFile("index.html");
 
   server.on("/toggle", HTTP_POST, [](AsyncWebServerRequest *request) { 
     request->send(200, "text/plain", "ok"); 
