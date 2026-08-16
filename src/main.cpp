@@ -14,18 +14,19 @@ void setup() {
     return;
   initLed();
   initSteppers();
-  initState();
   initNetworkConfiguration();
   initNetwork();
   startWebServer();
+  initState();
   blink(5000);
-  
 }
 
 void loop() {
   networkTick();
   ledTick();
   steppersTick();
+  stateTick();
+  
 
   // Point p = points[pointIndex];
   // movePolar(p.a, p.r);

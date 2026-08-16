@@ -1,15 +1,15 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <modules/temp/temp.h>
-#include <ArduinoJson.h>
-#include <LittleFS.h>
 #include <types/point.h>
-#include <vector>
 #include <modules/storage/storage.h>
 #include <modules/network/networkConfig.h>
 #include <state.h>
+#include <utils/JsonBuilder.h>
+#include "ws.h"
 
 AsyncWebServer server(80);
+
 
 void startWebServer() {
 
@@ -20,15 +20,13 @@ void startWebServer() {
   });
 
   server.on("/network/get", HTTP_POST, [](AsyncWebServerRequest *request) { 
-    JsonDocument doc; 
-    doc["network_mode"] = network_mode->get();
-    doc["wifi_ssid"] = wifi_ssid->get();
-    doc["wifi_password"] = wifi_password->get();
-    doc["ap_ssid"] = ap_ssid->get();
-    doc["ap_password"] = ap_password->get();
-    String jsonResponse;
-    serializeJson(doc, jsonResponse); 
-    request->send(200, "appication/json", jsonResponse);
+      JsonBuilder<512> b;
+      b.append("network_mode", network_mode->get());
+      b.append("wifi_ssid", wifi_ssid->get());
+      b.append("wifi_password", wifi_password->get());
+      b.append("ap_ssid", ap_ssid->get());
+      b.append("ap_password", ap_password->get());
+      request->send(200, "application/json", b.c_str());
   });
 
   String pointsBin = "/points.bin";
@@ -36,7 +34,6 @@ void startWebServer() {
   server.on("/upload", HTTP_POST, [pointsBin](AsyncWebServerRequest *request) {
       endWrite(pointsBin);
       initState();
-      
       request->send(200, "application/json", "{\"result\":\"saved_to_flash\"}");
   }, NULL, [pointsBin](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       if (index == 0) {
@@ -45,27 +42,22 @@ void startWebServer() {
       writeBytes(pointsBin, data, len);
   });
 
-  server.on("/status", HTTP_POST, [](AsyncWebServerRequest *request) {
-    JsonDocument doc; 
-    doc["uptime"] = millis() / 1000;
-    doc["temp"] = getTemp();
-    doc["pointsCount"] = pointsCount;
-    String jsonResponse;
-    serializeJson(doc, jsonResponse); 
-    request->send(200, "appication/json", jsonResponse);
-  });
+  // server.on("/status", HTTP_POST, [](AsyncWebServerRequest *request) {
+  //   // JsonBuilder<512> b;
+  //   // b.append("uptime", millis() );
+  //   // b.append("temp", getTemp());
+  //   // b.append("pointsCount", pointsCount);
+  //   // b.append("heapSize", ESP.getHeapSize());
+  //   // b.append("freeHeap", ESP.getFreeHeap());
+  //   request->send(200, "application/json", "{}");
+  // });
 
   server.on("/points", HTTP_POST, [](AsyncWebServerRequest *request) {
-    JsonDocument doc; 
-    JsonArray jsonArray = doc["points"].to<JsonArray>();
-    for (const auto& p : pts) {
-        jsonArray.add(p.a);
-        jsonArray.add(p.r);
-    }
-    String jsonResponse;
-    serializeJson(doc, jsonResponse); 
-    request->send(200, "appication/json", jsonResponse);
+     request->send(LittleFS, "/points.bin", "application/octet-stream");
   });
+
+
+  initWs(&server);
 
   server.begin();
 }

@@ -26,3 +26,11 @@ void writeBytes(
 );
 
 void endWrite(String fileName);
+
+size_t fileSize(String fileName);
+
+void startReadBinary(String fileName);
+
+size_t readBinary(uint8_t* buffer, size_t byteCount);
+
+void endReadBinary();

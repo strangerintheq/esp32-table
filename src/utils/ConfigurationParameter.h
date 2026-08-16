@@ -10,11 +10,10 @@ class ConfigurationParameter {
 private:
     String _fileName;
     String _value;
-    String _prefix = "/configuration/";
 
 public:
-    ConfigurationParameter(String name) {
-        _fileName = _prefix + name;
+    ConfigurationParameter(String fileName) {
+        _fileName = fileName;
         read(); 
     }
 

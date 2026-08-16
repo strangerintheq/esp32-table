@@ -1,5 +1,6 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
+#include <state.h>
 
 #define MOTOR_INTERFACE_TYPE 1
 
@@ -12,6 +13,9 @@ AccelStepper thetaStepper(MOTOR_INTERFACE_TYPE, stepPin1, dirPin1);
 AccelStepper rhoStepper(MOTOR_INTERFACE_TYPE, stepPin2, dirPin2);
 
 MultiStepper steppers;
+
+Point stepperMovingToPoint;
+long moveStartTimestamp;
 
 void initSteppers() {
   thetaStepper.setMaxSpeed(1000);
@@ -39,5 +43,15 @@ void movePolar(long targetTheta, long targetRho) {
 }
 
 void steppersTick() {
-
+  long now = millis();
+  if (stepperMovingToPoint.a == targetPoint.a && stepperMovingToPoint.r == targetPoint.r) {
+     if (now - moveStartTimestamp > 1000) {
+        steppersMoveFinished();
+     }
+    return;
+  }
+  stepperMovingToPoint.a = targetPoint.a;
+  stepperMovingToPoint.r = targetPoint.r;
+  moveStartTimestamp = millis();
+  Serial.printf("got new point a:%s r:%s\n", String(targetPoint.a), String(targetPoint.r));
 }

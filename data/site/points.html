@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Генератор точек (Полярные координаты)</title>
+        <link rel="icon" type="image/svg+xml" sizes="any" href="favicon.svg">
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -212,6 +213,43 @@
         generateAndDraw();
     }
 
+function filterPointsByDistance(pointsArray, targetDistance) {
+    if (pointsArray.length === 0) return [];
+
+    const filtered = [];
+    
+    // Вспомогательная функция для перевода полярных координат в декартовы
+    function toCartesian(point) {
+        return {
+            x: point.r * Math.cos(point.a),
+            y: point.r * Math.sin(point.a)
+        };
+    }
+
+    // Сохраняем самую первую точку как стартовую
+    filtered.push(pointsArray[0]);
+    let lastSavedCartesian = toCartesian(pointsArray[0]);
+
+    // Итерируемся по остальным точкам массива
+    for (let i = 1; i < pointsArray.length; i++) {
+        const currentCartesian = toCartesian(pointsArray[i]);
+
+        // Вычисляем евклидово расстояние между текущей точкой и последней сохраненной
+        const dx = currentCartesian.x - lastSavedCartesian.x;
+        const dy = currentCartesian.y - lastSavedCartesian.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Если расстояние достигло или превысило заданное, сохраняем точку
+        if (distance >= targetDistance) {
+            filtered.push(pointsArray[i]);
+            lastSavedCartesian = currentCartesian; // Смещаем эталонную точку
+        }
+    }
+
+    return filtered;
+}
+
+
     // Отрисовка графика: соединение сплошными линиями + мелкие точки поверх
     function generateAndDraw() {
         const formulaText = document.getElementById('formulaInput').value;
@@ -254,6 +292,8 @@
                 const drawY = cy + (r * maxRadius) * Math.sin(a);
                 renderPath.push({ x: drawX, y: drawY });
             }
+
+            // renderPath = filterPointsByDistance(renderPath, 10)
 
             // 1. Отрисовка непрерывного сплайна (линии)
             ctx.strokeStyle = '#2196f3';

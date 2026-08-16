@@ -23,11 +23,11 @@ void listDirectory(
     dirPath = ensure(dirPath);
     File root = LittleFS.open(dirPath, "r");
     if (!root) {
-        Serial.println("listDirectory: dir not found!");
+        Serial.printf("listDirectory: dir %s not found!\n", dirPath.c_str());
         return;
     }
     if (!root.isDirectory()) {
-        Serial.println("listDirectory: dir not found!");
+        Serial.printf("listDirectory: dir %s not found!\n", dirPath.c_str());
         root.close();
         return;
     }
@@ -46,7 +46,7 @@ String readString(String fileName) {
     fileName = ensure(fileName);
     File file = LittleFS.open(fileName, "r");
     if (!file) {
-        Serial.println("Не удалось открыть файл: " + fileName);
+        Serial.printf("Can't open file for reading: %s\n" ,fileName.c_str());
         return "";
     }
 
@@ -81,7 +81,7 @@ void writeString(String fileName, String newValue) {
     newValue.trim();
     File file = LittleFS.open(fileName, "w");
     if (!file) {
-        Serial.println("Wrror writing parameter: " + fileName);
+        Serial.printf("Error writing to: %s\n" , fileName.c_str());
         return;
     }
 
@@ -117,7 +117,7 @@ bool startWrite(String fileName){
     fileName = ensure(fileName);
     uploadFile = LittleFS.open(fileName, "w");
     if (!uploadFile) {
-        Serial.println("cant open file /points.bin");
+        Serial.printf("Cant open file %s for writing\n", fileName.c_str());
         return false;
     }
     return true;
@@ -132,6 +132,45 @@ void writeBytes(String fileName, uint8_t *data, size_t len) {
 void endWrite(String fileName){
     if (uploadFile) {
         uploadFile.close(); 
-        Serial.println("file written: " + fileName);
+        Serial.println("File written: " + fileName);
     }
 }
+
+size_t fileSize(String fileName) {
+    fileName = ensure(fileName);
+    File file = LittleFS.open(fileName, "r");
+    if (!file) {
+        Serial.printf("Failed to open file for size check: %s\n", fileName.c_str());
+        return 0;
+    }
+    size_t size = file.size();
+    file.close();
+    return size;
+}
+
+
+File currentReadBinaryFile;
+
+void endReadBinary() {
+    if (currentReadBinaryFile) {
+        currentReadBinaryFile.close();
+    }
+}
+
+void startReadBinary(String fileName) {
+    endReadBinary();
+    fileName = ensure(fileName);
+    currentReadBinaryFile = LittleFS.open(fileName, "r");
+    if (!currentReadBinaryFile) {
+        Serial.printf("Failed to open file for read: %s\n", fileName.c_str());
+    }
+}
+
+size_t readBinary(uint8_t* buffer, size_t byteCount) {
+    if (!currentReadBinaryFile || !currentReadBinaryFile.available()) {
+        return 0;
+    }
+    // Read directly into the provided destination buffer
+    return currentReadBinaryFile.read(buffer, byteCount);
+}
+

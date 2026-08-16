@@ -5,7 +5,11 @@
 #include <vector>
 
 extern size_t pointsCount;
-
-extern std::vector<Point> pts;
+extern int32_t targetPointIndex;
+extern Point targetPoint;
 
 void initState();
+
+void steppersMoveFinished();
+
+void stateTick();
