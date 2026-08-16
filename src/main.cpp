@@ -5,7 +5,7 @@
 #include <modules/server/server.h>
 #include <modules/led/led.h>
 #include <modules/storage/storage.h>
-//#include <state.h>
+#include <state.h>
 
 void setup() {
   Serial.begin(115200);
@@ -14,10 +14,12 @@ void setup() {
     return;
   initLed();
   initSteppers();
+  initState();
   initNetworkConfiguration();
   initNetwork();
   startWebServer();
   blink(5000);
+  
 }
 
 void loop() {

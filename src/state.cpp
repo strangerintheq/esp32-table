@@ -7,7 +7,7 @@ size_t pointsCount = 0;
 
 std::vector<Point> pts;
 
-void restorePoints() {
+void initState() {
     pts.clear(); 
     pointsCount = readBinaryFile("points.bin", sizeof(Point), [](const uint8_t* data) {
         // приводим указатель на байты к указателю на структуру Point

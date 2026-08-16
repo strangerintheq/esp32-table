@@ -8,4 +8,4 @@ extern size_t pointsCount;
 
 extern std::vector<Point> pts;
 
-void restorePoints();
+void initState();

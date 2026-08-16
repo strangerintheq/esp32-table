@@ -11,11 +11,7 @@
 
 AsyncWebServer server(80);
 
-File uploadFile;
-
 void startWebServer() {
-
-  restorePoints();
 
   server.serveStatic("/", LittleFS, "/site/").setDefaultFile("index.html");
 
@@ -35,26 +31,18 @@ void startWebServer() {
     request->send(200, "appication/json", jsonResponse);
   });
 
-  server.on("/upload", HTTP_POST, [](AsyncWebServerRequest *request) {
-      if (uploadFile) {
-          uploadFile.close(); 
-          restorePoints();
-      }
-      Serial.println("[LittleFS] Файл успешно сохранен!");
-      // AsyncWebServerResponse *response = request->beginResponse();
-      // response->addHeader("Access-Control-Allow-Origin", "*");
+  String pointsBin = "/points.bin";
+
+  server.on("/upload", HTTP_POST, [pointsBin](AsyncWebServerRequest *request) {
+      endWrite(pointsBin);
+      initState();
+      
       request->send(200, "application/json", "{\"result\":\"saved_to_flash\"}");
-  }, NULL, [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+  }, NULL, [pointsBin](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
       if (index == 0) {
-          uploadFile = LittleFS.open("/points.bin", "w");
-          if (!uploadFile) {
-              Serial.println("cant open file /points.bin");
-              return;
-          }
+          startWrite(pointsBin);
       }
-      if (uploadFile && len > 0) {
-          uploadFile.write(data, len);
-      }
+      writeBytes(pointsBin, data, len);
   });
 
   server.on("/status", HTTP_POST, [](AsyncWebServerRequest *request) {

@@ -2,9 +2,9 @@
 
 bool initStorage();
 
-String readString(String);
+String readString(String fileName);
 
-void writeString(String, String);
+void writeString(String filaName, String content);
 
 void listDirectory(
     String dirPath, 
@@ -16,3 +16,13 @@ size_t readBinaryFile(
     size_t stride, 
     std::function<void(const uint8_t*)> fn
 );
+
+bool startWrite(String fileName);
+
+void writeBytes(
+    String fileName, 
+    uint8_t *data, 
+    size_t len
+);
+
+void endWrite(String fileName);

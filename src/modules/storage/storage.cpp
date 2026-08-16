@@ -110,3 +110,28 @@ size_t readBinaryFile(
   }
   return size;
 }
+
+File uploadFile;
+
+bool startWrite(String fileName){
+    fileName = ensure(fileName);
+    uploadFile = LittleFS.open(fileName, "w");
+    if (!uploadFile) {
+        Serial.println("cant open file /points.bin");
+        return false;
+    }
+    return true;
+}
+
+void writeBytes(String fileName, uint8_t *data, size_t len) {
+    if (uploadFile && len > 0) {
+        uploadFile.write(data, len);
+    }
+}
+
+void endWrite(String fileName){
+    if (uploadFile) {
+        uploadFile.close(); 
+        Serial.println("file written: " + fileName);
+    }
+}
