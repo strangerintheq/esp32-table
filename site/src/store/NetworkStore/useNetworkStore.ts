@@ -18,7 +18,7 @@ export const useNetworkStore = create<NetworkStore>((
         try {
             const res = await fetch('/network/get', { method: 'POST' });
             if (!res.ok)
-                throw new Error('Failed to fetch network settings');
+                throw new Error('Failed to fetch NetworkSettings settings');
             const data = await res.json();
             set({
                 isAP: data.network_mode !== 'wifi',
@@ -36,13 +36,13 @@ export const useNetworkStore = create<NetworkStore>((
     saveSettings: async () => {
         set({ isLoading: true, error: null });
         const { isAP, wifi_ssid, wifi_pass, ap_ssid, ap_pass } = get();
-        const params = new URLSearchParams({
+        const params = {
             mode: isAP ? 'ap' : 'wifi', wifi_ssid, wifi_pass, ap_ssid, ap_pass
-        });
+        };
         const res = await fetch('/network/set', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params.toString()
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params)
         });
         set(res.ok ? { isSaved: true, isLoading: false } : { error: 'Failed to save settings', isLoading: false });
     }

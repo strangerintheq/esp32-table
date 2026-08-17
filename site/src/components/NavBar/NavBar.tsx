@@ -1,6 +1,7 @@
-import React, {PropsWithChildren} from 'react';
-import {NavLink} from "react-router-dom";
+import * as React from 'preact';
 import './Navbar.css';
+import {PropsWithChildren} from "preact/compat";
+import {NavLink} from 'react-router-dom';
 
 export function Navbar() {
     return <nav className="main-navbar">

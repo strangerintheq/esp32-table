@@ -1,0 +1,7 @@
+{
+    "mode": "ap",
+    "wifi_ssid": "example",
+    "wifi_pass": "123",
+    "ap_ssid": "ESP3211123",
+    "ap_pass": "1234"
+}

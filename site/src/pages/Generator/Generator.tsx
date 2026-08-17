@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { useGeneratorStore } from '../../store/generator/useGeneratorStore';
+import { useGeneratorStore } from '../../store/GeneratorStore/useGeneratorStore';
 import './Generator.css';
-import {PreviewCanvas} from "../../components/preview/PreviewCanvas";
+import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 
 export function Generator() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

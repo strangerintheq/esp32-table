@@ -1,9 +1,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { NetworkSettings } from './pages/network/NetworkSettings';
-import {Generator} from "./pages/generator/Generator";
+import { NetworkSettings } from './pages/NetworkSettings/NetworkSettings';
+import {Generator} from "./pages/Generator/Generator";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LiveMonitor } from './pages/monitor/Monitor';
+import { LiveMonitor } from './pages/Monitor/Monitor';
 import {AppLayout} from "./components/AppLayout/AppLayout";
 
 import "./styles/index.css";

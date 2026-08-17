@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNetworkStore } from '../../store/network/useNetworkStore';
+import { useNetworkStore } from '../../store/NetworkStore/useNetworkStore';
 import './NetworkSettings.css';
 import {Input} from "../../components/Input/Input";
 import {Switch} from "../../components/Switch/Switch";

@@ -92,19 +92,20 @@ export const useGeneratorStore = create<GeneratorStore>((set, get) => ({
 
     uploadPoints: async () => {
         const { points } = get();
-        if (points.length === 0) return;
+        if (points.length === 0)
+            return;
 
         set({ isLoading: true, status: 'Uploading data to ESP32...', isError: false });
-        try {
-            const response = await fetch('/pattern/upload', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ points })
-            });
-            if (!response.ok) throw new Error('Failed to upload coordinates');
-            set({ isLoading: false, status: 'Success! Pattern sent to ESP32', isError: false });
-        } catch (err: any) {
-            set({ isLoading: false, status: err.message, isError: true });
-        }
+
+        const binaryData = new Float32Array(points.flat());
+        const body = binaryData.buffer;
+        const headers = {'Content-Type': 'application/octet-stream' }
+        const method = "POST"
+        const response = await fetch('/upload', {method, body, headers});
+        set({
+            isLoading: false,
+            status: response.ok ? 'Success! Pattern sent to ESP32' : 'Failed to upload coordinates',
+            isError: !response.ok
+        });
     }
 }));

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Navbar} from "../navigation/NavBar";
+import {Navbar} from "../NavBar/NavBar";
 import {Outlet} from 'react-router-dom';
 
 import "./AppLayout.css"

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import {useMonitorStore} from "../../store/monitor/useMonitorStore";
-import {PreviewCanvas} from "../../components/preview/PreviewCanvas";
+import {useMonitorStore} from "../../store/MonitorStore/useMonitorStore";
+import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 
 export function LiveMonitor() {
     const {

@@ -1,6 +1,4 @@
 @import "Button.css";
-@import "Checkbox.css";
-@import "Input.css";
 
 /* Ниже идет ваш остальной базовый код (body, .box, .status и т.д.) */
 body {
