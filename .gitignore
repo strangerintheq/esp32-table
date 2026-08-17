@@ -4,3 +4,6 @@
 .vscode/launch.json
 .vscode/ipch
 /site/node_modules
+/site/.idea
+/site/stats.html
+/data/site/*

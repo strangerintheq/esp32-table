@@ -18,7 +18,7 @@ setInterval(() => {
     emit && emit(JSON.stringify({targetPointIndex}))
 }, 100)
 
-const wss = new WebSocketServer({port: 8080});
+const wss = new WebSocketServer({port: 8089});
 
 wss.on('connection', (ws) => {
     console.log('ws connected');

@@ -1,7 +1,7 @@
 import * as React from 'preact';
 import './Navbar.css';
 import {PropsWithChildren} from "preact/compat";
-import {NavLink} from 'react-router-dom';
+import { Link } from 'wouter';
 
 export function Navbar() {
     return <nav className="main-navbar">
@@ -13,6 +13,6 @@ export function Navbar() {
 
 function Navigation({children, to}: PropsWithChildren<{ to }>) {
     const className = x => x.isActive ? "nav-item active" : "nav-item";
-    return <NavLink to={to} className={className}>{children}</NavLink>
+    return <Link to={to} className={className}>{children}</Link>
 }
 

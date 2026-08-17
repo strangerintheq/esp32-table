@@ -2,17 +2,20 @@
   "name": "site",
   "version": "1.0.0",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build --emptyOutDir"
   },
   "dependencies": {
     "preact": "^10.29.8",
-    "react-router-dom": "^7.18.2",
+    "wouter": "^3.10.0",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "ws": "^8.21.3",
+    "rollup-plugin-visualizer": "^7.1.1",
+    "typescript": "^7.0.2",
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@vitejs/plugin-react": "^6.0.5",
-    "vite": "^8.2.1"
+    "vite": "^8.2.1",
+    "ws": "^8.21.3"
   }
 }
