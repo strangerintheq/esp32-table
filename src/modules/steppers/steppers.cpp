@@ -1,6 +1,6 @@
 #include <AccelStepper.h>
 #include <MultiStepper.h>
-#include <state.h>
+#include <state/state.h>
 
 #define MOTOR_INTERFACE_TYPE 1
 
