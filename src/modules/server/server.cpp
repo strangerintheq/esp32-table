@@ -61,7 +61,7 @@ void startWebServer() {
   });
 
 
-  server.on("api/network/set", HTTP_POST, 
+  server.on("/api/network/set", HTTP_POST, 
     [](AsyncWebServerRequest *request) {
         sendOk(request);
     },
