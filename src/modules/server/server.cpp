@@ -11,10 +11,21 @@
 
 AsyncWebServer server(80);
 
+const char* single_page_routes[] = {
+    "/network",
+    "/generator",
+};
 
 void startWebServer() {
 
-  server.serveStatic("/", LittleFS, "/site/").setDefaultFile("index.html");
+  for (const char* route : single_page_routes) {
+    server.on(route, HTTP_GET, [](AsyncWebServerRequest *request) { 
+        request->send(LittleFS, "/site/index.html", "text/html"); 
+    });
+  }
+
+  server.serveStatic("/", LittleFS, "/site/")
+    .setCacheControl("public, max-age=31536000, immutable");
 
   server.on("/toggle", HTTP_POST, [](AsyncWebServerRequest *request) { 
     request->send(200, "text/plain", "ok"); 
