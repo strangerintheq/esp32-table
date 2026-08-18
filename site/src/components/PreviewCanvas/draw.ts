@@ -24,9 +24,9 @@ export function draw(
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, maxRadius, 0, 2 * Math.PI);
-    ctx.moveTo(-maxRadius, 0); ctx.lineTo(maxRadius, 0);
-    ctx.moveTo(0, -maxRadius); ctx.lineTo(0, maxRadius);
+    ctx.arc(0, 0, maxRadius*1.05, 0, 2 * Math.PI);
+    // ctx.moveTo(-maxRadius, 0); ctx.lineTo(maxRadius, 0);
+    // ctx.moveTo(0, -maxRadius); ctx.lineTo(0, maxRadius);
     ctx.stroke();
 
     const toScreen = (pt: Point2D): Point2D => [

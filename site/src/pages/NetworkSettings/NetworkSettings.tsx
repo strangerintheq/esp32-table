@@ -6,7 +6,7 @@ import {Switch} from "../../components/Switch/Switch";
 
 export function NetworkSettings() {
     const {
-        isAP, wifi_ssid, wifi_pass, ap_ssid, ap_pass, isLoading, isSaved, error,
+        network_mode, wifi_ssid, wifi_password, ap_ssid, ap_password, isLoading, isSaved, error,
         toggleMode, setField, fetchSettings, saveSettings
     } = useNetworkStore();
 
@@ -21,6 +21,8 @@ export function NetworkSettings() {
 
     if (isLoading && !isSaved) return <div className="loader">Loading settings...</div>;
     if (isSaved) return <div className="status">Settings saved!<br/>ESP32 is restarting...</div>;
+
+    let isAP = network_mode === "ap";
 
     return (
         <div className="box max-wide compact-form">
@@ -44,8 +46,8 @@ export function NetworkSettings() {
                             label={"Wi-Fi SSID (Router)"}
                         />
                         <Input
-                            value={wifi_pass}
-                            onChange={(e) => setField('wifi_pass', e.target.value)}
+                            value={wifi_password}
+                            onChange={(e) => setField('wifi_password', e.target.value)}
                             label={"Wi-Fi Password"}
                         />
                     </div>
@@ -57,8 +59,8 @@ export function NetworkSettings() {
                             label={"ESP32 AP SSID"}
                         />
                         <Input
-                            value={ap_pass}
-                            onChange={(e) => setField('ap_pass', e.target.value)}
+                            value={ap_password}
+                            onChange={(e) => setField('ap_password', e.target.value)}
                             label={"ESP32 AP Password"}
                         />
                     </div>

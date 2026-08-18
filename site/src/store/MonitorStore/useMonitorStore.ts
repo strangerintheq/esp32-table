@@ -1,5 +1,6 @@
 import {create} from 'zustand';
 import {MonitorStore} from "./MonitorStore";
+import {API} from "../../API";
 
 export const useMonitorStore = create<MonitorStore>((
     set,
@@ -21,7 +22,7 @@ export const useMonitorStore = create<MonitorStore>((
 
         socket.onclose = () => {
             console.log('WebSocket connection closed');
-            set({ wsConnected: false, targetPointIndex: null });
+            set({ wsConnected: false, targetPointIndex: null, systemState: null });
             // Автоматический реконнект каждые 2 секунды при потере связи
             reconnectTimeout = setTimeout(connect, 2000);
         };
@@ -34,6 +35,9 @@ export const useMonitorStore = create<MonitorStore>((
                 }
                 if (data.temp !== undefined) {
                     set({ temperature: data.temp });
+                }
+                if (data.systemState !== undefined) {
+                    set({ systemState: data.systemState });
                 }
             } catch (err) {
                 console.error('Failed to parse WebSocket JSON:', err);
@@ -49,7 +53,7 @@ export const useMonitorStore = create<MonitorStore>((
 
     async function fetchCurrentPoints () {
         try {
-            const res = await fetch('/points', { method: 'POST' });
+            const res = await fetch(API.DOWNLOAD_POINTS, { method: 'POST' });
             if (!res.ok)
                 throw new Error('Error fetching points from ESP32');
 
@@ -74,6 +78,7 @@ export const useMonitorStore = create<MonitorStore>((
     fetchCurrentPoints()
 
     return {
+        systemState: null,
         screenPoints: [],
         targetPointIndex: null,
         temperature: "?",

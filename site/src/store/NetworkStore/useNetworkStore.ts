@@ -1,4 +1,7 @@
 import { create } from 'zustand';
+import {API} from "../../API";
+import {sendRequest} from "../../utils/sendRequest";
+import {NetworkSettings} from "../../types/NetworkSettings";
 
 export const useNetworkStore = create<NetworkStore>((
     set,
@@ -6,7 +9,7 @@ export const useNetworkStore = create<NetworkStore>((
 ) => ({
 
     toggleMode() {
-        set((s) => ({ isAP: !s.isAP }))
+        set((s) => ({ network_mode: s.network_mode === "ap" ? "wifi" : "ap" }))
     },
 
     setField(field, value){
@@ -16,16 +19,13 @@ export const useNetworkStore = create<NetworkStore>((
     fetchSettings: async () => {
         set({ isLoading: true, error: null });
         try {
-            const res = await fetch('/network/get', { method: 'POST' });
-            if (!res.ok)
-                throw new Error('Failed to fetch NetworkSettings settings');
-            const data = await res.json();
+            const data = await sendRequest<NetworkSettings>(API.NETWORK_GET);
             set({
-                isAP: data.network_mode !== 'wifi',
-                wifi_ssid: data.wifi_ssid || '',
-                wifi_pass: data.wifi_password || '',
-                ap_ssid: data.ap_ssid || '',
-                ap_pass: data.ap_password || '',
+                network_mode: data.network_mode,
+                wifi_ssid: data.wifi_ssid,
+                wifi_password: data.wifi_password,
+                ap_ssid: data.ap_ssid,
+                ap_password: data.ap_password,
                 isLoading: false
             });
         } catch (err) {
@@ -35,14 +35,17 @@ export const useNetworkStore = create<NetworkStore>((
 
     saveSettings: async () => {
         set({ isLoading: true, error: null });
-        const { isAP, wifi_ssid, wifi_pass, ap_ssid, ap_pass } = get();
-        const params = {
-            mode: isAP ? 'ap' : 'wifi', wifi_ssid, wifi_pass, ap_ssid, ap_pass
-        };
-        const res = await fetch('/network/set', {
+        const { network_mode, wifi_ssid, wifi_password, ap_ssid, ap_password } = get();
+        const res = await fetch(API.NETWORK_SET, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(params)
+            body: JSON.stringify({
+                network_mode,
+                wifi_ssid,
+                wifi_password,
+                ap_ssid,
+                ap_password
+            })
         });
         set(res.ok ? { isSaved: true, isLoading: false } : { error: 'Failed to save settings', isLoading: false });
     }

@@ -1,55 +1,49 @@
 import {WebSocketServer} from 'ws';
 import { writeFile } from 'node:fs/promises';
 import {readFileSync} from 'fs'
+import {API} from "../src/API.js";
+import {mockServerLogic} from "./mockServerLogic.js";
 
 export default function serverPlugin() {
-    const pointsBin = 'mock/points.bin';
-    const networkJson = 'mock/network.json';
 
-    const networkSettings = JSON.parse(readFileSync(networkJson).toString())
-    let points = readFileSync(pointsBin);
-
-    let targetPointIndex = 0;
-    let emit;
-
-    setInterval(() => {
-        if (points.byteLength === 0)
-            return;
-        targetPointIndex = (targetPointIndex + 1) % (points.byteLength / 8);
-        emit && emit(JSON.stringify({targetPointIndex}))
-    }, 100)
-
+    const mock = mockServerLogic();
     const wss = new WebSocketServer({port: 8089});
 
     wss.on('connection', (ws) => {
         console.log('ws connected');
-        emit = (obj) => ws.send(obj)
+        mock.setEmit((obj) => ws.send(obj))
         ws.on('close', () => {
-            emit = null
+            mock.setEmit(null);
             console.log('ws disconnected');
         });
+        ws.send(JSON.stringify({systemState: mock.getSystemState()}))
     });
     return {
         name: 'server-plugin',
         configureServer(server) {
-            post(server, '/points', () => {
-                return points
+            const OK = {result: 'ok'};
+            post(server, API.DOWNLOAD_POINTS, () => {
+                return mock.getPoints();
             });
-            post(server, '/upload', async (buf) => {
-                points = buf
-                await writeFile(pointsBin, Buffer.from(buf));
-                targetPointIndex = 0
-                return {result: 'ok'}
+            post(server, API.UPLOAD_POINTS, async (buf) => {
+                await mock.uploadPoints(buf);
+                return OK
             });
-            post(server, '/network/get', () => {
-                return networkSettings;
+            post(server, API.NETWORK_GET, () => {
+                return mock.getNetworkSettings();
             });
-            post(server, '/network/set', async x => {
-                Object.assign(networkSettings, x);
-                console.log(networkSettings)
-                await writeFile(networkJson, JSON.stringify(x, null ,4))
-                return {result: 'ok'}
+            post(server, API.NETWORK_SET, async x => {
+                await mock.setNetworkSettings(x)
+                return OK
             });
+            Object.entries(API)
+                .filter(([_, route]) => route.includes("signal"))
+                .forEach(([name, route]) => {
+                    post(server, route, () => {
+                        mock.sendSignal(name);
+                        return OK
+                    });
+                })
         }
     };
 }

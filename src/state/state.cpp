@@ -54,26 +54,18 @@ void initState() {
 }
 
 void stateTick() {
-    //   Serial.println("isSequenceActive " + String(isSequenceActive));
-    //    Serial.println("isTargetReached " + String(isTargetReached));
     if (!isSequenceActive || !isTargetReached) {
         return;
     }
-        
     if (targetPointIndex < pointsCount - 1) {
         // Push pre-loaded point from pipeline to active hardware registers
         copyNextPointToCurrentPoint();
-        
         // Fetch the next sequential point ahead of time into pipeline
         readNextPoint();
-        
-        Serial.printf("Advanced to point index: %u / %u\n", targetPointIndex, pointsCount);
     } else {
-        Serial.println("All points from file have been processed");
         endReadBinary(); 
         isSequenceActive = false;
     }
-
 }
 
 int32_t getTargetPointIndex() {
@@ -82,5 +74,4 @@ int32_t getTargetPointIndex() {
 
 void steppersMoveFinished() {
     isTargetReached = true;
-  
 }

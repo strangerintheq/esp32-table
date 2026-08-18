@@ -6,6 +6,7 @@
 #include <modules/led/led.h>
 #include <modules/storage/storage.h>
 #include <state/state.h>
+#include "state/fsm.h"
 
 void setup() {
   Serial.begin(115200);
@@ -20,15 +21,17 @@ void setup() {
   initNetworkConfiguration();
   initNetwork();
   startWebServer();
-  initState();
+  //initState();
+  initFsm();
   blink(5000);
 }
 
 void loop() {
   networkTick();
   ledTick();
-  steppersTick();
-  stateTick();
+  // steppersTick();
+  // stateTick();
+  fsmTick();
   
 
   // Point p = points[pointIndex];

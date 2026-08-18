@@ -1,9 +1,9 @@
 interface NetworkStoreState {
-    isAP?: boolean;
+    network_mode?: string;
     wifi_ssid?: string;
-    wifi_pass?: string;
+    wifi_password?: string;
     ap_ssid?: string;
-    ap_pass?: string;
+    ap_password?: string;
 }
 
 interface NetworkStore extends NetworkStoreState {

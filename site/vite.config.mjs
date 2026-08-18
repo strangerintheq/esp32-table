@@ -46,25 +46,24 @@ const runPlugins = () => [
     })
 ];
 
-
 export default defineConfig(({ command, mode }) => {
 
     return {
         build: {
-            // Change the output directory (default is 'dist')
             outDir: '../data/site/',
+       
         },
         plugins: command === "build" ? buildPlugins() : runPlugins(),
-        // server: {
-        //     proxy: {
-        //         '/ws': {
-        //             target: 'ws://localhost:8089',
-        //             ws: true,
-        //             changeOrigin: true,
-        //             rewrite: (path) => path.replace(/^\/ws/, ''),
-        //         },
-        //     },
-        // },
+        server: {
+            proxy: {
+                '/ws': {
+                    target: 'ws://localhost:8089',
+                    ws: true,
+                    changeOrigin: true,
+                    rewrite: (path) => path.replace(/^\/ws/, ''),
+                },
+            },
+        },
         resolve: {
             alias: {
                 'react': 'preact/compat',

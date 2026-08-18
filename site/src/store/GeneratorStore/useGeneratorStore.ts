@@ -1,5 +1,6 @@
 import {create} from 'zustand';
 import {GeneratorStore} from "./generatorStore";
+import {API} from "../../API";
 
 const RANDOM_FORMULAS = [
     'Math.sin(2 * a)',
@@ -101,7 +102,7 @@ export const useGeneratorStore = create<GeneratorStore>((set, get) => ({
         const body = binaryData.buffer;
         const headers = {'Content-Type': 'application/octet-stream' }
         const method = "POST"
-        const response = await fetch('/upload', {method, body, headers});
+        const response = await fetch(API.UPLOAD_POINTS, {method, body, headers});
         set({
             isLoading: false,
             status: response.ok ? 'Success! Pattern sent to ESP32' : 'Failed to upload coordinates',
