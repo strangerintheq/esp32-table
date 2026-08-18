@@ -9,7 +9,10 @@
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n\n ESP32 starting...");
+  Serial.println("\n\n   ___ ___ ___ _______");
+  Serial.println("  | __/ __| _ \\__ /_  )");
+  Serial.println("  | _|\\__ \\  _/|_ \\/ / ");
+  Serial.println("  |___|___/_| |___/___|\n\n");
   if (!initStorage()) 
     return;
   initLed();
