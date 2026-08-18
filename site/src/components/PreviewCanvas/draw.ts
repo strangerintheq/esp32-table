@@ -35,7 +35,7 @@ export function draw(
     ];
 
     ctx.strokeStyle = '#2196f3';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();

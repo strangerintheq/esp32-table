@@ -2,34 +2,33 @@ import {WebSocketServer} from 'ws';
 import { writeFile } from 'node:fs/promises';
 import {readFileSync} from 'fs'
 
-const pointsBin = 'mock/points.bin';
-const networkJson = 'mock/network.json';
-
-const networkSettings = JSON.parse(readFileSync(networkJson).toString())
-let points = readFileSync(pointsBin);
-
-let targetPointIndex = 0;
-let emit;
-
-setInterval(() => {
-    if (points.byteLength === 0)
-        return;
-    targetPointIndex = (targetPointIndex + 1) % (points.byteLength / 8);
-    emit && emit(JSON.stringify({targetPointIndex}))
-}, 100)
-
-const wss = new WebSocketServer({port: 8089});
-
-wss.on('connection', (ws) => {
-    console.log('ws connected');
-    emit = (obj) => ws.send(obj)
-    ws.on('close', () => {
-        emit = null
-        console.log('ws disconnected');
-    });
-});
-
 export default function serverPlugin() {
+    const pointsBin = 'mock/points.bin';
+    const networkJson = 'mock/network.json';
+
+    const networkSettings = JSON.parse(readFileSync(networkJson).toString())
+    let points = readFileSync(pointsBin);
+
+    let targetPointIndex = 0;
+    let emit;
+
+    setInterval(() => {
+        if (points.byteLength === 0)
+            return;
+        targetPointIndex = (targetPointIndex + 1) % (points.byteLength / 8);
+        emit && emit(JSON.stringify({targetPointIndex}))
+    }, 100)
+
+    const wss = new WebSocketServer({port: 8089});
+
+    wss.on('connection', (ws) => {
+        console.log('ws connected');
+        emit = (obj) => ws.send(obj)
+        ws.on('close', () => {
+            emit = null
+            console.log('ws disconnected');
+        });
+    });
     return {
         name: 'server-plugin',
         configureServer(server) {

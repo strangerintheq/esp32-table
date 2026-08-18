@@ -8,7 +8,7 @@ def run_npm_build(source, target, env):
     result = subprocess.run(
         "npm run build", 
         shell=True, 
-        cwd="/Users/sq/dev/esp32/test-1/test1/site"
+        cwd="site"
     )
     
     if result.returncode != 0:

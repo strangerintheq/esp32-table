@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import serverPlugin from "./mock/serverMock.js";
+import serverPlugin from "./mock/serverMock.mjs";
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -27,42 +27,52 @@ const preactReactRouterFix = () => ({
     }
 });
 
-export default defineConfig({
-    build: {
-        // Change the output directory (default is 'dist')
-        outDir: '../data/site/', 
-    },
-    plugins: [
-        preactReactRouterFix(),
-        viteCommonjs(),
-        react({
-            include: "**/*.tsx",
-        }),
-        serverPlugin(),
-        visualizer({
-            filename: 'stats.html', // Файл появится в папке site
-            open: false, // Выключаем автоматическое открытие в браузере (чтобы не ломать консоль PIO)
-            gzipSize: true, // Покажет размер и в сжатом виде тоже
-            brotliSize: true
-        })
-    ],
-    server: {
-        proxy: {
-            '/ws': {
-                target: 'ws://localhost:8089',
-                ws: true,
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/ws/, ''),
+const buildPlugins = () => [
+    preactReactRouterFix(),
+    viteCommonjs(),
+    react({
+        include: "**/*.tsx",
+    }),
+]
+
+const runPlugins = () => [
+    ...buildPlugins(),
+    serverPlugin(),
+    visualizer({
+        filename: 'stats.html', // Файл появится в папке site
+        open: false, // Выключаем автоматическое открытие в браузере (чтобы не ломать консоль PIO)
+        gzipSize: true, // Покажет размер и в сжатом виде тоже
+        brotliSize: true
+    })
+];
+
+
+export default defineConfig(({ command, mode }) => {
+
+    return {
+        build: {
+            // Change the output directory (default is 'dist')
+            outDir: '../data/site/',
+        },
+        plugins: command === "build" ? buildPlugins() : runPlugins(),
+        // server: {
+        //     proxy: {
+        //         '/ws': {
+        //             target: 'ws://localhost:8089',
+        //             ws: true,
+        //             changeOrigin: true,
+        //             rewrite: (path) => path.replace(/^\/ws/, ''),
+        //         },
+        //     },
+        // },
+        resolve: {
+            alias: {
+                'react': 'preact/compat',
+                'react-dom/test-utils': 'preact/test-utils',
+                'react-dom': 'preact/compat',
+                'react/jsx-runtime': 'preact/jsx-runtime',
             },
         },
-    },
-    resolve: {
-        alias: {
-            'react': 'preact/compat',
-            'react-dom/test-utils': 'preact/test-utils',
-            'react-dom': 'preact/compat',
-            'react/jsx-runtime': 'preact/jsx-runtime',
-        },
-    },
+    }
 });
 
