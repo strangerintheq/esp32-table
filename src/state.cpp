@@ -26,7 +26,7 @@ void copyNextPointToCurrentPoint() {
     targetPointIndex++;
     targetPoint = nextPoint;
     JsonBuilder<64> b;
-    b.append("targetPoinitIndex", targetPointIndex);
+    b.append("targetPointIndex", targetPointIndex);
     broadcast(b.c_str());
 }
 
