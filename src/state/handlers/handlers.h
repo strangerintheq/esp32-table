@@ -7,6 +7,7 @@ void pausingStateTick();
 void runningStateTick();
 void startingStateTick();
 void stoppingStateTick();
+void unpausingStateTick();
 
 inline void runHandlerTick(SystemState currentState) {
      switch (currentState) {
@@ -20,6 +21,8 @@ inline void runHandlerTick(SystemState currentState) {
             return pausingStateTick();
         case SystemState::STOPPING:
             return stoppingStateTick();
+        case SystemState::UNPAUSING:
+            return unpausingStateTick();
  
             
         default:

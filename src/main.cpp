@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <types/point.h>
+#include <types/Point.h>
 #include <modules/network/network.h>
 #include <modules/steppers/steppers.h>
 #include <modules/server/server.h>
@@ -29,8 +29,7 @@ void setup() {
 void loop() {
   networkTick();
   ledTick();
-  // steppersTick();
-  // stateTick();
+  steppersTick();
   fsmTick();
   
 

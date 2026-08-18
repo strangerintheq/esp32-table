@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <types/point.h>
+#include <types/Point.h>
 #include <vector>
 
 extern size_t pointsCount;

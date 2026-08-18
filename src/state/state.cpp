@@ -1,16 +1,18 @@
 #include <Arduino.h>
 #include <modules/storage/storage.h>
-#include <types/point.h>
+#include <types/Point.h>
 #include <modules/server/ws.h>
 #include <utils/JsonBuilder.h>
-
+#include <types/SystemState.h>
 
 size_t pointsCount;
 int32_t targetPointIndex;
 Point targetPoint;
 Point nextPoint;
-bool isSequenceActive;
+//bool isSequenceActive;
 bool isTargetReached;
+
+extern void setSystemState(SystemState state);
 
 void readNextPoint() {
     size_t bytesRead = readBinary((uint8_t*)&nextPoint, sizeof(Point));
@@ -36,12 +38,12 @@ void initState() {
     
     if (pointsCount == 0) {
         Serial.println("Initialization aborted: points.bin is empty or missing");
-        isSequenceActive = false;
+        //isSequenceActive = false;
         return;
     }
 
     startReadBinary("points.bin");
-    isSequenceActive = true;
+    //isSequenceActive = true;
 
     // Phase 1: Load point 0 into nextPoint, then push it to targetPoint
     readNextPoint();
@@ -54,7 +56,7 @@ void initState() {
 }
 
 void stateTick() {
-    if (!isSequenceActive || !isTargetReached) {
+    if (!isTargetReached) {
         return;
     }
     if (targetPointIndex < pointsCount - 1) {
@@ -64,7 +66,8 @@ void stateTick() {
         readNextPoint();
     } else {
         endReadBinary(); 
-        isSequenceActive = false;
+        //isSequenceActive = false;
+        setSystemState(SystemState::COMPLETED);
     }
 }
 

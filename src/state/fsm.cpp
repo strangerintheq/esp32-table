@@ -2,10 +2,21 @@
 #include <state/fsm.h>
 #include "handlers/handlers.h"
 #include "logic/nextState.h"
+#include <modules/server/ws.h>
+#include <utils/JsonBuilder.h>
 
 SystemState currentState = SystemState::INITIALIZING;
 
 QueueHandle_t signalQueue = nullptr;
+
+void setSystemState(SystemState state) {
+    Serial.println("setSystemState: " + systemStateName(currentState) + " -> " + systemStateName(state));
+
+    currentState = state;
+    JsonBuilder<64> b;
+    b.append("systemState", systemStateName(currentState));
+    broadcast(b.c_str());
+}
 
 void initFsm() {
     signalQueue = xQueueCreate(20, sizeof(SystemSignal));
@@ -22,7 +33,7 @@ void fsmTick() {
     if (signalQueue != nullptr && xQueueReceive(signalQueue, &receivedSignal, 0) == pdPASS) {
         if (receivedSignal != SystemSignal::NONE) {
             Serial.println("Processing signal: " + systemSignalName(receivedSignal));  
-            currentState = nextState(currentState, receivedSignal);
+            setSystemState(nextState(currentState, receivedSignal));
         }
     }
     
@@ -40,7 +51,3 @@ void sendSignal(SystemSignal signal) {
     }
 }
 
-void setSystemState(SystemState state) {
-    Serial.println("setSystemState: " + systemStateName(currentState) + " -> " + systemStateName(state));
-    currentState = state;
-}
