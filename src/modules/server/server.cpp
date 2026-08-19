@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESPAsyncWebServer.h>
 #include <modules/temp/temp.h>
-#include <types/point.h>
+#include <types/Point.h>
 #include <modules/storage/storage.h>
 #include <modules/network/networkConfig.h>
 #include <state/state.h>
