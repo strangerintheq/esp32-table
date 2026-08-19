@@ -1,7 +1,7 @@
 {
     "network_mode": "ap",
     "wifi_ssid": "example1",
-    "wifi_password": "",
+    "wifi_password": "14",
     "ap_ssid": "ESP3211123",
-    "ap_password": ""
+    "ap_password": "11"
 }

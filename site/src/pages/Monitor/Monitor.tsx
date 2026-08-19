@@ -15,12 +15,11 @@ export function LiveMonitor() {
 
     return <div className="box max-wide compact-form">
         <h2>Live Monitor</h2>
-
         <PreviewCanvas
             points={screenPoints}
             targetPointIndex={targetPointIndex}
-            state={systemState}
-            temp={temperature}
+            leftText={systemState}
+            rightText={temperature? temperature+"°C" : ""}
         />
         <div style={{display: 'flex', flexDirection: 'row', gap: 5}}>
             {canStart(systemState) && <button onClick={() => sendRequest(API.START)}>START</button>}

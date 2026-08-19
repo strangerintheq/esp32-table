@@ -15,7 +15,7 @@ export function mockServerLogic() {
     let emit;
     let outgoingMsg : WsMessage = {}
 
-    setInterval(() => {
+    setInterval(async () => {
         if (systemState === SystemState.INITIALIZING) {
             updateSystemState(SystemState.IDLE)
         } else if (systemState === SystemState.STARTING) {
@@ -27,7 +27,12 @@ export function mockServerLogic() {
             updateTargetPointIndex(null)
         } else if (systemState === SystemState.UNPAUSING) {
             updateSystemState(SystemState.RUNNING)
+        } else if (systemState === SystemState.REBOOTING) {
+            await new Promise((resolve) => setTimeout(resolve,900))
+            console.log('reboot')
+            updateSystemState(SystemState.IDLE)
         }
+
         updateTemp();
     }, 1000)
 
@@ -80,7 +85,7 @@ export function mockServerLogic() {
                 updateSystemState(SystemState.PAUSING)
         },
         reboot() {
-           updateSystemState(SystemState.INITIALIZING)
+           updateSystemState(SystemState.REBOOTING)
         }
     }
 
@@ -106,6 +111,7 @@ export function mockServerLogic() {
             Object.assign(networkSettings, settings);
             console.log('update network settings', networkSettings)
             await writeFile(networkJson, JSON.stringify(settings, null ,4))
+            // updateSystemState(SystemState.REBOOTING)
         },
         getPoints() {
             return points;

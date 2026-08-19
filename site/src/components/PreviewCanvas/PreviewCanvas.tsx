@@ -8,7 +8,7 @@ export function PreviewCanvas(props: PreviewCanvasProps) {
 
     useEffect(() => {
         draw(canvasRef, props);
-    }, [props.points, props.targetPointIndex, props.state, props.temp]);
+    }, [props.points, props.targetPointIndex, props.leftText, props.rightText]);
 
     return (
         <canvas

@@ -1,6 +1,5 @@
 import { RefObject } from 'preact';
 import {PreviewCanvasProps} from "./PreviewCanvasProps";
-import {SystemState} from "../../types/SystemState";
 
 const traversedPathColor = '#2196f3';
 const remainingPathColor = '#b7b7b7';
@@ -20,8 +19,11 @@ export function draw(
     drawBg(ctx, maxRadius);
     drawLine(ctx, props, maxRadius);
     drawPoints(ctx, props, maxRadius);
-    drawState(ctx, props.state)
-    drawTemp(ctx, props.temp)
+    ctx.translate(-canvas.width/2+20, 0)
+    drawText(ctx, props.leftText)
+    ctx.textAlign = 'right'
+    ctx.translate(canvas.width-40, 0)
+    drawText(ctx, props.rightText)
     ctx.restore();
 }
 
@@ -73,18 +75,12 @@ function drawPoints(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, ma
     });
 }
 
-function drawState(ctx: CanvasRenderingContext2D, state?: SystemState) {
-    if (!state)
+function drawText(ctx: CanvasRenderingContext2D, text?: string) {
+    if (!text)
         return
     ctx.fillStyle = "black"
     ctx.font = '28px Arial'
-    ctx.fillText(state, -ctx.canvas.width/2+20,-ctx.canvas.height/2+40)
+    ctx.fillText(text, 0,-ctx.canvas.height/2+40)
 }
 
-function drawTemp(ctx: CanvasRenderingContext2D, temp?: number) {
-    if (!temp)
-        return
-    ctx.fillStyle = "black"
-    ctx.font = '28px Arial'
-    ctx.fillText(temp+"°C", ctx.canvas.width/2-70,-ctx.canvas.height/2+40)
-}
+

@@ -18,21 +18,16 @@ export function Generator() {
         <div className="box max-wide compact-form">
             <h2>Pattern Generator</h2>
 
-            {/* Поле формулы */}
             <div className="floating-group">
                 <input
                     type="text"
                     value={formula}
-                    placeholder=" " // Важно: пробел для работы CSS :placeholder-shown
+                    placeholder=" " // important CSS :placeholder-shown
                     onChange={(e: any) => setField('formula', e.target.value)}
                 />
                 <label>Radius formula r(a)</label>
             </div>
-            <div className="hint">
-                Angle: <b>a</b>. Negative processed as <code>Math.abs()</code>.
-            </div>
 
-            {/* Двухколоночный ряд для параметров */}
             <div className="input-row">
                 <div className="floating-group">
                     <input
@@ -41,7 +36,7 @@ export function Generator() {
                         min="0.1"
                         max="50"
                         step="0.1"
-                        placeholder=" "
+                        placeholder=" "// important CSS :placeholder-shown
                         onChange={(e:any) => setField('turns', parseFloat(e.target.value) || 1)}
                     />
                     <label>Total Turns</label>
@@ -61,11 +56,6 @@ export function Generator() {
                 </div>
             </div>
 
-            <div className="compact-badge">
-                Plotted points: <b>{calculatedPointsCount}</b>
-            </div>
-
-            {/* Компактный горизонтальный ряд кнопок */}
             <div className="btn-container-row">
                 <button className="btn-rand" onClick={setRandomFormula} title="Random formula">🎲</button>
                 <button className="btn-gen" onClick={generatePoints}>🔄 Calc</button>
@@ -79,7 +69,7 @@ export function Generator() {
             </div>
 
 
-            <PreviewCanvas points={points}/>
+            <PreviewCanvas points={points} leftText={calculatedPointsCount + " points"}/>
 
             {/* Статус ответа от ESP32 */}
             {status && (
