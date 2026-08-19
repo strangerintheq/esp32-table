@@ -6,7 +6,7 @@ void rebootingStateTick() {
     uint32_t now = millis();
     if (rebootStartTimestamp == 0)
         rebootStartTimestamp = now;
-    if (now - rebootStartTimestamp < 500)
+    if (now - rebootStartTimestamp < 1500)
         return;
     ESP.restart();        
 }
