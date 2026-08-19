@@ -4,8 +4,14 @@
     "target": "esnext",
     "sourceMap": true,
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "skipLibCheck": true
   },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx"
+  ],
   "exclude": [
     "node_modules"
   ]

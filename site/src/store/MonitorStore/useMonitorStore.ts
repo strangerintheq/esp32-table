@@ -22,7 +22,7 @@ export const useMonitorStore = create<MonitorStore>((
 
         socket.onclose = () => {
             console.log('WebSocket connection closed');
-            set({ wsConnected: false, targetPointIndex: null, systemState: null });
+            set({ wsConnected: false, targetPointIndex: undefined, systemState: undefined });
             // Автоматический реконнект каждые 2 секунды при потере связи
             reconnectTimeout = setTimeout(connect, 2000);
         };

@@ -1,5 +1,7 @@
+import {SystemState} from "./SystemState";
+
 export interface WsMessage {
-    targetPointIndex?;
-    systemState?;
-    temp?;
+    targetPointIndex?: number;
+    systemState?: SystemState;
+    temp?: number;
 }

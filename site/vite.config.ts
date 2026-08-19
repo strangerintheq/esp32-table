@@ -1,8 +1,9 @@
+//@ts-ignore
 import { defineConfig } from 'vite';
+//@ts-ignore
 import react from '@vitejs/plugin-react';
-import serverPlugin from "./mock/serverMock.ts";
+import serverPlugin from "./mock/serverMock";
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 const preactReactRouterFix = () => ({
     name: 'preact-react-router-fix',
@@ -30,30 +31,31 @@ const preactReactRouterFix = () => ({
 const buildPlugins = () => [
     preactReactRouterFix(),
     viteCommonjs(),
-    react({
-        include: "**/*.tsx",
-    }),
+    react(),
 ]
 
-const runPlugins = () => [
-    ...buildPlugins(),
-    serverPlugin(),
-    visualizer({
-        filename: 'stats.html', // Файл появится в папке site
-        open: false, // Выключаем автоматическое открытие в браузере (чтобы не ломать консоль PIO)
-        gzipSize: true, // Покажет размер и в сжатом виде тоже
-        brotliSize: true
-    })
-];
+const runPlugins = async () => {
+    const { visualizer } = await import('rollup-plugin-visualizer');
+    return [
+        ...buildPlugins(),
+        serverPlugin(),
+        visualizer({
+            filename: 'stats.html', // Файл появится в папке site
+            open: false, // Выключаем автоматическое открытие в браузере (чтобы не ломать консоль PIO)
+            gzipSize: true, // Покажет размер и в сжатом виде тоже
+            brotliSize: true
+        })
+    ];
+};
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(async ({ command, mode }) => {
 
     return {
         build: {
             outDir: '../data/site/',
        
         },
-        plugins: command === "build" ? buildPlugins() : runPlugins(),
+        plugins: command === "build" ? buildPlugins() : await runPlugins(),
         server: {
             proxy: {
                 '/ws': {

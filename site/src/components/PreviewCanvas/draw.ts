@@ -1,4 +1,4 @@
-import { RefObject } from 'react';
+import { RefObject } from 'preact';
 import {PreviewCanvasProps} from "./PreviewCanvasProps";
 import {SystemState} from "../../types/SystemState";
 
@@ -60,12 +60,12 @@ function drawLine(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, maxR
 }
 
 function drawPoints(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, maxRadius: number) {
-    const {points,targetPointIndex} = props;
+    const {points, targetPointIndex} = props;
     if (!points)
         return
     ctx.fillStyle = '#ff5722';
     points.forEach(([x, y], i) => {
-        if (i < targetPointIndex)
+        if (targetPointIndex && i < targetPointIndex)
             return
         ctx.beginPath();
         ctx.arc(x*maxRadius, y*maxRadius, 2, 0, 2 * Math.PI);
@@ -73,7 +73,7 @@ function drawPoints(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, ma
     });
 }
 
-function drawState(ctx: CanvasRenderingContext2D, state: SystemState) {
+function drawState(ctx: CanvasRenderingContext2D, state?: SystemState) {
     if (!state)
         return
     ctx.fillStyle = "black"
@@ -81,7 +81,7 @@ function drawState(ctx: CanvasRenderingContext2D, state: SystemState) {
     ctx.fillText(state, -ctx.canvas.width/2+20,-ctx.canvas.height/2+40)
 }
 
-function drawTemp(ctx: CanvasRenderingContext2D, temp: number) {
+function drawTemp(ctx: CanvasRenderingContext2D, temp?: number) {
     if (!temp)
         return
     ctx.fillStyle = "black"

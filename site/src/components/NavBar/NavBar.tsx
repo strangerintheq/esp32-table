@@ -11,8 +11,8 @@ export function Navbar() {
     </nav>;
 }
 
-function Navigation({children, to}: PropsWithChildren<{ to }>) {
-    const className = x => x.isActive ? "nav-item active" : "nav-item";
+function Navigation({children, to}: PropsWithChildren<{ to: string }>) {
+    const className = (x:any) => x.isActive ? "nav-item active" : "nav-item";
     return <Link to={to} className={className}>{children}</Link>
 }
 

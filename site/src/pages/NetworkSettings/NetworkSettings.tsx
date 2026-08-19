@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import * as React from 'preact';
 import { useNetworkStore } from '../../store/NetworkStore/useNetworkStore';
 import './NetworkSettings.css';
 import {Input} from "../../components/Input/Input";
 import {Switch} from "../../components/Switch/Switch";
+import {JSX} from "preact";
 
 export function NetworkSettings() {
     const {
@@ -10,7 +11,7 @@ export function NetworkSettings() {
         toggleMode, setField, saveSettings
     } = useNetworkStore();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = (e: Event) => {
         e.preventDefault();
         saveSettings();
     };
@@ -38,12 +39,12 @@ export function NetworkSettings() {
                     <div id="staFields">
                         <Input
                             value={wifi_ssid}
-                            onChange={(e) => setField('wifi_ssid', e.target.value)}
+                            onChange={(e: any) => setField('wifi_ssid', e.target.value)}
                             label={"Wi-Fi SSID (Router)"}
                         />
                         <Input
                             value={wifi_password}
-                            onChange={(e) => setField('wifi_password', e.target.value)}
+                            onChange={(e: any) => setField('wifi_password', e.target.value)}
                             label={"Wi-Fi Password"}
                         />
                     </div>
@@ -51,12 +52,12 @@ export function NetworkSettings() {
                     <div id="apFields">
                         <Input
                             value={ap_ssid}
-                            onChange={(e) => setField('ap_ssid', e.target.value)}
+                            onChange={(e: any) => setField('ap_ssid', e.target.value)}
                             label={"ESP32 AP SSID"}
                         />
                         <Input
                             value={ap_password}
-                            onChange={(e) => setField('ap_password', e.target.value)}
+                            onChange={(e: any) => setField('ap_password', e.target.value)}
                             label={"ESP32 AP Password"}
                         />
                     </div>

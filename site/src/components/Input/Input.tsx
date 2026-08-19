@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'preact';
 import "./Input.css"
 
-export function Input({value, onChange, label}: {value, onChange, label}) {
+export function Input({value, onChange, label}: {value: any, onChange: (e:any) => void, label: string}) {
     return <div className="floating-group">
         <input
             type="text"

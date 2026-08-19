@@ -20,7 +20,7 @@ export const useNetworkStore = create<NetworkStore>((
                 ap_password: data.ap_password,
                 isLoading: false
             });
-        } catch (err) {
+        } catch (err: any) {
             set({error: err.message, isLoading: false});
         }
     }

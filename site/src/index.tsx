@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'preact';
 import { NetworkSettings } from './pages/NetworkSettings/NetworkSettings';
 import {Generator} from "./pages/Generator/Generator";
 import { LiveMonitor } from './pages/Monitor/Monitor';
@@ -9,7 +9,7 @@ import {Route, Switch} from 'wouter';
 import {createRoot} from "preact/compat/client";
 
 const root = document.querySelector("#root");
-createRoot(root).render(<App />);
+root && createRoot(root).render(<App />);
 
 function App() {
     return <AppLayout>

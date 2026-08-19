@@ -1,10 +1,9 @@
-import React from 'react';
+import * as React from 'preact';
 import {useMonitorStore} from "../../store/MonitorStore/useMonitorStore";
 import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 import {sendRequest} from "../../utils/sendRequest";
 import {API} from "../../types/API";
 import {SystemState} from "../../types/SystemState";
-
 
 export function LiveMonitor() {
     const {
@@ -33,18 +32,18 @@ export function LiveMonitor() {
     </div>;
 }
 
-function canStart(systemState: SystemState) {
+function canStart(systemState?: SystemState) {
     return systemState === SystemState.PAUSED || systemState == SystemState.IDLE
 }
 
-function canPause(systemState: SystemState) {
+function canPause(systemState?: SystemState) {
     return systemState === SystemState.RUNNING
 }
 
-function canStop(systemState: SystemState) {
+function canStop(systemState?: SystemState) {
     return systemState === SystemState.PAUSED || systemState === SystemState.RUNNING;
 }
 
-function canClear(systemState: SystemState) {
+function canClear(systemState?: SystemState) {
     return systemState === SystemState.COMPLETED || systemState === SystemState.ERROR;
 }

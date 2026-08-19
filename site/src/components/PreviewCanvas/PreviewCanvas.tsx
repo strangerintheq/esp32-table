@@ -1,6 +1,7 @@
-import React, {useEffect, useRef} from 'react';
+import * as React from 'preact';
 import {draw} from "./draw";
 import {PreviewCanvasProps} from "./PreviewCanvasProps";
+import {useEffect, useRef} from "preact/compat";
 
 export function PreviewCanvas(props: PreviewCanvasProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);

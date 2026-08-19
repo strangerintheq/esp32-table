@@ -9,7 +9,7 @@ interface NetworkStoreState {
 interface NetworkStore extends NetworkStoreState {
     isLoading?: boolean;
     isSaved?: boolean;
-    error?: string;
+    error?: string | null;
     toggleMode: () => void;
     setField: (field: keyof NetworkStoreState, value: string) => void;
     saveSettings: () => Promise<void>;

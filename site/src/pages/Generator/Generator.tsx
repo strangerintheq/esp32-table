@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import * as React from 'preact';
 import { useGeneratorStore } from '../../store/GeneratorStore/useGeneratorStore';
 import './Generator.css';
 import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
+import {useEffect} from "preact/compat";
 
 export function Generator() {
-    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const {
         formula, turns, fixedStep, points, isLoading, status, isError, calculatedPointsCount,
         setField, setRandomFormula, generatePoints, uploadPoints
@@ -24,7 +24,7 @@ export function Generator() {
                     type="text"
                     value={formula}
                     placeholder=" " // Важно: пробел для работы CSS :placeholder-shown
-                    onChange={(e) => setField('formula', e.target.value)}
+                    onChange={(e: any) => setField('formula', e.target.value)}
                 />
                 <label>Radius formula r(a)</label>
             </div>
@@ -42,7 +42,7 @@ export function Generator() {
                         max="50"
                         step="0.1"
                         placeholder=" "
-                        onChange={(e) => setField('turns', parseFloat(e.target.value) || 1)}
+                        onChange={(e:any) => setField('turns', parseFloat(e.target.value) || 1)}
                     />
                     <label>Total Turns</label>
                 </div>
@@ -55,7 +55,7 @@ export function Generator() {
                         max="0.5"
                         step="0.005"
                         placeholder=" "
-                        onChange={(e) => setField('fixedStep', parseFloat(e.target.value) || 0.05)}
+                        onChange={(e:any) => setField('fixedStep', parseFloat(e.target.value) || 0.05)}
                     />
                     <label>Fixed Step</label>
                 </div>
