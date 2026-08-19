@@ -28,6 +28,7 @@ inline String systemStateName(SystemState state){
         case SystemState::STOPPING: return "STOPPING";
         case SystemState::COMPLETED: return "COMPLETED";
         case SystemState::ERROR: return "ERROR";
+        case SystemState::REBOOTING: return "REBOOTING";
     }
     return "!! UNKNOWN_STATE!!";
 }
