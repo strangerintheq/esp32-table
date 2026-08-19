@@ -12,6 +12,5 @@ interface NetworkStore extends NetworkStoreState {
     error?: string;
     toggleMode: () => void;
     setField: (field: keyof NetworkStoreState, value: string) => void;
-    fetchSettings: () => Promise<void>;
     saveSettings: () => Promise<void>;
 }

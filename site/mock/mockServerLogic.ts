@@ -1,6 +1,7 @@
 import {readFileSync} from "fs";
 import {writeFile} from "node:fs/promises";
 import {SystemState} from "../src/types/SystemState";
+import {WsMessage} from "../src/types/WsMessage";
 
 export function mockServerLogic() {
     let systemState = SystemState.INITIALIZING
@@ -12,7 +13,7 @@ export function mockServerLogic() {
 
     let targetPointIndex = null;
     let emit;
-    let outgoingMsg = {}
+    let outgoingMsg : WsMessage = {}
 
     setInterval(() => {
         if (systemState === SystemState.INITIALIZING) {
@@ -27,6 +28,7 @@ export function mockServerLogic() {
         } else if (systemState === SystemState.UNPAUSING) {
             updateSystemState(SystemState.RUNNING)
         }
+        updateTemp();
     }, 1000)
 
     setInterval(() => {
@@ -42,9 +44,15 @@ export function mockServerLogic() {
         outgoingMsg = {}
     }, 100)
 
+    function updateTemp(){
+        if (Math.random()<0.9)
+            return
+        outgoingMsg.temp = 50 + (Math.random()*5|0)
+    }
+
     function updateTargetPointIndex(x) {
         targetPointIndex = x
-        outgoingMsg.targetPointIndex = targetPointIndex
+        outgoingMsg.targetPointIndex = targetPointIndex;
     }
 
     function updateSystemState(state) {
@@ -76,18 +84,14 @@ export function mockServerLogic() {
         }
     }
 
-    async function startTask() {
-        setInterval(() => {
-            if (points.byteLength === 0)
-                return;
-            targetPointIndex = (targetPointIndex + 1) % (points.byteLength / 8);
-            emit && emit(JSON.stringify({targetPointIndex}))
-        }, 100)
-    }
-
     return {
         setEmit(callback) {
             emit = callback
+            callback && callback(JSON.stringify({
+                systemState,
+                targetPointIndex,
+                temp: 52
+            }))
         },
         async uploadPoints(buf) {
             points = buf;

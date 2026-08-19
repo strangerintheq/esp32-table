@@ -1,4 +1,4 @@
-import {API} from "../API";
+import {API} from "../types/API";
 
 export async function sendRequest<T>(endpoint: string, payload?: string):Promise<T> {
     const res = await fetch(endpoint, { method: 'POST' });

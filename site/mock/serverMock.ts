@@ -1,12 +1,11 @@
 import {WebSocketServer} from 'ws';
-import { writeFile } from 'node:fs/promises';
-import {readFileSync} from 'fs'
-import {API} from "../src/API.js";
+import {API} from "../src/types/API";
 import {mockServerLogic} from "./mockServerLogic.js";
 
 export default function serverPlugin() {
 
     const mock = mockServerLogic();
+
     const wss = new WebSocketServer({port: 8089});
 
     wss.on('connection', (ws) => {
@@ -16,8 +15,8 @@ export default function serverPlugin() {
             mock.setEmit(null);
             console.log('ws disconnected');
         });
-        ws.send(JSON.stringify({systemState: mock.getSystemState()}))
     });
+
     return {
         name: 'server-plugin',
         configureServer(server) {

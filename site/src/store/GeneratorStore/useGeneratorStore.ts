@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {GeneratorStore} from "./generatorStore";
-import {API} from "../../API";
+import {API} from "../../types/API";
 
 const RANDOM_FORMULAS = [
     'Math.sin(2 * a)',

@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 import {MonitorStore} from "./MonitorStore";
-import {API} from "../../API";
+import {API} from "../../types/API";
 
 export const useMonitorStore = create<MonitorStore>((
     set,
@@ -74,16 +74,9 @@ export const useMonitorStore = create<MonitorStore>((
         }
     }
 
-
     fetchCurrentPoints()
 
     return {
-        systemState: null,
-        screenPoints: [],
-        targetPointIndex: null,
-        temperature: "?",
-        wsConnected: false,
-
-        fetchCurrentPoints
+        wsConnected: false
     };
 });

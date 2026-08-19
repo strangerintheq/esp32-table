@@ -7,12 +7,8 @@ import {Switch} from "../../components/Switch/Switch";
 export function NetworkSettings() {
     const {
         network_mode, wifi_ssid, wifi_password, ap_ssid, ap_password, isLoading, isSaved, error,
-        toggleMode, setField, fetchSettings, saveSettings
+        toggleMode, setField, saveSettings
     } = useNetworkStore();
-
-    useEffect(() => {
-        fetchSettings();
-    }, [fetchSettings]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

@@ -1,20 +1,13 @@
-import React, { useEffect, useRef } from 'react';
+import React, {useEffect, useRef} from 'react';
 import {draw} from "./draw";
+import {PreviewCanvasProps} from "./PreviewCanvasProps";
 
-
-interface PreviewCanvasProps {
-    points: [number, number][];
-    targetPointIndex?: number | null;
-}
-
-export function PreviewCanvas({points, targetPointIndex = null}) {
+export function PreviewCanvas(props: PreviewCanvasProps) {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
     useEffect(() => {
-        if (!points || points.length === 0)
-            return;
-        draw(canvasRef, points, targetPointIndex);
-    }, [points, targetPointIndex]);
+        draw(canvasRef, props);
+    }, [props.points, props.targetPointIndex, props.state, props.temp]);
 
     return (
         <canvas

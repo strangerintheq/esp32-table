@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {useMonitorStore} from "../../store/MonitorStore/useMonitorStore";
 import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 import {sendRequest} from "../../utils/sendRequest";
-import {API} from "../../API";
+import {API} from "../../types/API";
+import {SystemState} from "../../types/SystemState";
+
 
 export function LiveMonitor() {
     const {
@@ -15,23 +17,34 @@ export function LiveMonitor() {
     return <div className="box max-wide compact-form">
         <h2>Live Monitor</h2>
 
-        <div style={{fontSize: '13px', color: '#546e7a', marginBottom: '12px', textAlign: 'center'}}>
-            System Temperature: <b>{temperature}</b>°C
-        </div>
-
-        <div style={{fontSize: '13px', color: '#546e7a', marginBottom: '12px', textAlign: 'center'}}>
-            System State: <b>{systemState}</b>
-        </div>
-
         <PreviewCanvas
             points={screenPoints}
             targetPointIndex={targetPointIndex}
+            state={systemState}
+            temp={temperature}
         />
         <div style={{display: 'flex', flexDirection: 'row', gap: 5}}>
-            <button onClick={() => sendRequest(API.START)}>START</button>
-            <button onClick={() => sendRequest(API.PAUSE)}>PAUSE</button>
-            <button onClick={() => sendRequest(API.STOP)}>STOP</button>
+            {canStart(systemState) && <button onClick={() => sendRequest(API.START)}>START</button>}
+            {canPause(systemState) && <button onClick={() => sendRequest(API.PAUSE)}>PAUSE</button>}
+            {canStop(systemState) && <button onClick={() => sendRequest(API.STOP)}>STOP</button>}
+            {canClear(systemState) && <button onClick={() => sendRequest(API.CLEAR)}>CLEAR</button>}
         </div>
 
     </div>;
+}
+
+function canStart(systemState: SystemState) {
+    return systemState === SystemState.PAUSED || systemState == SystemState.IDLE
+}
+
+function canPause(systemState: SystemState) {
+    return systemState === SystemState.RUNNING
+}
+
+function canStop(systemState: SystemState) {
+    return systemState === SystemState.PAUSED || systemState === SystemState.RUNNING;
+}
+
+function canClear(systemState: SystemState) {
+    return systemState === SystemState.COMPLETED || systemState === SystemState.ERROR;
 }

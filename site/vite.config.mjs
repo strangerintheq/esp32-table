@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import serverPlugin from "./mock/serverMock.mjs";
+import serverPlugin from "./mock/serverMock.ts";
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import { visualizer } from 'rollup-plugin-visualizer';
 

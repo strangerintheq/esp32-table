@@ -1,71 +1,90 @@
 import { RefObject } from 'react';
+import {PreviewCanvasProps} from "./PreviewCanvasProps";
+import {SystemState} from "../../types/SystemState";
 
-type Point2D = [number, number];
+const traversedPathColor = '#2196f3';
+const remainingPathColor = '#b7b7b7';
 
 export function draw(
     canvasRef: RefObject<HTMLCanvasElement | null>,
-    points: Point2D[],
-    targetPointIndex: number | null = null
+    props: PreviewCanvasProps
 ): void {
     const canvas = canvasRef.current;
-    if (!canvas || points.length === 0) return;
-
+    if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-
     const maxRadius = (canvas.width / 2) - 40;
-
     ctx.save();
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     ctx.translate(canvas.width / 2, canvas.height / 2);
+    drawBg(ctx, maxRadius);
+    drawLine(ctx, props, maxRadius);
+    drawPoints(ctx, props, maxRadius);
+    drawState(ctx, props.state)
+    drawTemp(ctx, props.temp)
+    ctx.restore();
+}
 
+function drawBg(ctx: CanvasRenderingContext2D, maxRadius: number) {
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.arc(0, 0, maxRadius*1.05, 0, 2 * Math.PI);
+    ctx.arc(0, 0, maxRadius * 1.05, 0, 2 * Math.PI);
     // ctx.moveTo(-maxRadius, 0); ctx.lineTo(maxRadius, 0);
     // ctx.moveTo(0, -maxRadius); ctx.lineTo(0, maxRadius);
     ctx.stroke();
+}
 
-    const toScreen = (pt: Point2D): Point2D => [
-        pt[0] * maxRadius,
-        -pt[1] * maxRadius
-    ];
-
-    ctx.strokeStyle = '#2196f3';
+function drawLine(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, maxRadius: number) {
+    const {points,targetPointIndex} = props;
+    if (!points || points.length === 0)
+        return
+    ctx.strokeStyle = targetPointIndex ? traversedPathColor : remainingPathColor;
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.beginPath();
-
-    const [startX, startY] = toScreen(points[0]);
-    ctx.moveTo(startX, startY);
-
+    ctx.moveTo(points[0][0] * maxRadius, points[0][1] * maxRadius);
     for (let i = 1; i < points.length; i++) {
-        const [screenX, screenY] = toScreen(points[i]);
-        ctx.lineTo(screenX, screenY);
-
-        // Разделение цвета по индексу выполнения для Монитора
+        const [x, y] = points[i]
+        ctx.lineTo(x * maxRadius, y * maxRadius);
         if (targetPointIndex !== null && i === targetPointIndex) {
             ctx.stroke();
             ctx.beginPath();
             ctx.lineWidth = 1;
-            ctx.strokeStyle = '#ff1961'; // Розовый — оставшийся путь
-            ctx.moveTo(screenX, screenY);
+            ctx.strokeStyle = remainingPathColor;
+            ctx.moveTo(x * maxRadius, y * maxRadius);
         }
     }
     ctx.stroke();
+}
 
-    // 6. Отрисовка маркерных точек шага
+function drawPoints(ctx: CanvasRenderingContext2D, props: PreviewCanvasProps, maxRadius: number) {
+    const {points,targetPointIndex} = props;
+    if (!points)
+        return
     ctx.fillStyle = '#ff5722';
-    points.forEach((pt) => {
-        const [screenX, screenY] = toScreen(pt);
+    points.forEach(([x, y], i) => {
+        if (i < targetPointIndex)
+            return
         ctx.beginPath();
-        ctx.arc(screenX, screenY, 1.5, 0, 2 * Math.PI);
+        ctx.arc(x*maxRadius, y*maxRadius, 2, 0, 2 * Math.PI);
         ctx.fill();
     });
+}
 
-    ctx.restore();
+function drawState(ctx: CanvasRenderingContext2D, state: SystemState) {
+    if (!state)
+        return
+    ctx.fillStyle = "black"
+    ctx.font = '28px Arial'
+    ctx.fillText(state, -ctx.canvas.width/2+20,-ctx.canvas.height/2+40)
+}
+
+function drawTemp(ctx: CanvasRenderingContext2D, temp: number) {
+    if (!temp)
+        return
+    ctx.fillStyle = "black"
+    ctx.font = '28px Arial'
+    ctx.fillText(temp+"°C", ctx.canvas.width/2-70,-ctx.canvas.height/2+40)
 }

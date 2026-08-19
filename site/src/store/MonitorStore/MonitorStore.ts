@@ -1,9 +1,9 @@
-export interface MonitorStore {
-    systemState: string;
-    screenPoints: [ number, number ][];
-    targetPointIndex: number | null;
-    temperature: string | null;
-    wsConnected: boolean;
+import {SystemState} from "../../types/SystemState";
 
-    fetchCurrentPoints: () => Promise<void>;
+export interface MonitorStore {
+    systemState?: SystemState;
+    screenPoints?: [ number, number ][];
+    targetPointIndex?: number;
+    temperature?: number;
+    wsConnected: boolean;
 }
