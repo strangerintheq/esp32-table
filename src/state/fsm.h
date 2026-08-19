@@ -9,3 +9,5 @@ void fsmTick();
 
 void sendSignal(SystemSignal);
 
+void setSystemState(SystemState);
+

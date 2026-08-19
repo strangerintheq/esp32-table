@@ -1,15 +1,14 @@
 #include <Arduino.h>
 #include <modules/storage/storage.h>
 #include <types/Point.h>
-#include <modules/server/ws.h>
 #include <utils/JsonBuilder.h>
 #include <types/SystemState.h>
+#include <modules/server/broadcaster.h>
 
 size_t pointsCount;
 int32_t targetPointIndex;
 Point targetPoint;
 Point nextPoint;
-//bool isSequenceActive;
 bool isTargetReached;
 
 extern void setSystemState(SystemState state);
@@ -23,36 +22,35 @@ void readNextPoint() {
     }
 }
 
+void updateTargetPointIndex(int32_t i) {
+    targetPointIndex = i;
+    broadcaster_setTargetPointIndex(i);
+}
+
 void copyNextPointToCurrentPoint() {
     isTargetReached = false;
-    targetPointIndex++;
     targetPoint = nextPoint;
-    JsonBuilder<64> b;
-    b.append("targetPointIndex", targetPointIndex);
-    broadcast(b.c_str());
+    updateTargetPointIndex(targetPointIndex + 1);
 }
 
 void initState() {
     pointsCount = fileSize("points.bin") / sizeof(Point);
     targetPointIndex = -1;
-    
     if (pointsCount == 0) {
         Serial.println("Initialization aborted: points.bin is empty or missing");
-        //isSequenceActive = false;
         return;
     }
-
     startReadBinary("points.bin");
-    //isSequenceActive = true;
-
-    // Phase 1: Load point 0 into nextPoint, then push it to targetPoint
     readNextPoint();
     copyNextPointToCurrentPoint();
-
-    // Phase 2: Speculatively load point 1 into nextPoint if available
     if (pointsCount > 1) {
         readNextPoint();
     }
+}
+
+void stopStateTicks() {
+     endReadBinary(); 
+     updateTargetPointIndex(0);
 }
 
 void stateTick() {
@@ -60,21 +58,15 @@ void stateTick() {
         return;
     }
     if (targetPointIndex < pointsCount - 1) {
-        // Push pre-loaded point from pipeline to active hardware registers
         copyNextPointToCurrentPoint();
-        // Fetch the next sequential point ahead of time into pipeline
         readNextPoint();
     } else {
-        endReadBinary(); 
-        //isSequenceActive = false;
         setSystemState(SystemState::COMPLETED);
+        stopStateTicks();
     }
-}
-
-int32_t getTargetPointIndex() {
-    return targetPointIndex;
 }
 
 void steppersMoveFinished() {
     isTargetReached = true;
 }
+

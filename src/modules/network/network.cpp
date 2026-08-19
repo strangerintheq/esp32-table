@@ -8,7 +8,6 @@ const uint32_t WIFI_CONNECTION_FALLBACK_TIMEOUT = 5000;
 
 bool wifiConnecting = false;
 bool wifiConnected = false;
-// bool wifiConnectionFailed = false;
 
 uint32_t wifiConnectingLastCheckTimestamp = 0;
 uint32_t wifiConnectingStartTimestamp = 0;
@@ -42,9 +41,6 @@ void createAccessPoint() {
 }
 
 void networkTick() {
-  // if (wifiConnectionFailed) {
-
-  // }
   if (!wifiConnecting) {
     return;
   }
@@ -53,7 +49,6 @@ void networkTick() {
     return;
   }
   if (now - wifiConnectingStartTimestamp > WIFI_CONNECTION_FALLBACK_TIMEOUT) {
-    // wifiConnectionFailed = true;
     wifiConnecting = false;
     Serial.println("failed");
     WiFi.disconnect();

@@ -12,7 +12,8 @@
 
 AsyncWebServer server(80);
 
-const char* single_page_routes[] = {
+const char* index_routes[] = {
+    "/",
     "/network",
     "/generator",
 };
@@ -31,20 +32,22 @@ void sendOk(AsyncWebServerRequest *request) {
 
 void startWebServer() {
 
-  for (const char* route : single_page_routes) {
+  for (const char* route : index_routes) {
     server.on(route, HTTP_GET, [](AsyncWebServerRequest *request) { 
         request->send(LittleFS, "/site/index.html", "text/html"); 
     });
   }
 
-  server.serveStatic("/", LittleFS, "/site/")
-    .setDefaultFile("/index.html")
-    .setCacheControl("public, max-age=31536000, immutable");
+  server.serveStatic("/assets/", LittleFS, "/site/assets/")
+    // .setDefaultFile("/index.html")
+    .setCacheControl("public, max-age=31536000, immutable")
+    ;
 
   for (const SystemSignal sig : signal_routes) {
     String route = "/api/signal/" + systemSignalName(sig);
     route.toLowerCase();
-    server.on(route.c_str(), HTTP_POST, [sig](AsyncWebServerRequest *request) { 
+    const char* persistentRoute = strdup(route.c_str());
+    server.on(persistentRoute, HTTP_POST, [sig](AsyncWebServerRequest *request) { 
         sendSignal(sig);
         sendOk(request);
     });
@@ -60,11 +63,8 @@ void startWebServer() {
       request->send(200, "application/json", b.c_str());
   });
 
-
   server.on("/api/network/set", HTTP_POST, 
-    [](AsyncWebServerRequest *request) {
-        sendOk(request);
-    },
+    [](AsyncWebServerRequest *request) {},
     NULL, 
     [](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
         JsonDocument doc;
@@ -80,7 +80,8 @@ void startWebServer() {
                 ap_ssid->write(doc["ap_ssid"].as<String>());
             if (doc["ap_password"].is<String>())   
                 ap_password->write(doc["ap_password"].as<String>());
-            ESP.restart();
+            sendOk(request);    
+            sendSignal(SystemSignal::REBOOT);
         }
     }
   );

@@ -4,4 +4,4 @@
 
 void initWs(AsyncWebServer* server);
 
-void broadcast(String data);
+void wsTick();

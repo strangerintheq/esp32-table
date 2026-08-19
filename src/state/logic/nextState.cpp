@@ -5,6 +5,8 @@ SystemState nextState(SystemState state, SystemSignal signal) {
 
     if (signal == SystemSignal::HARDWARE_FAULT) {
         return SystemState::ERROR;
+    } else if (signal == SystemSignal::REBOOT) {
+        return SystemState::REBOOTING;
     }
 
     switch (state) {

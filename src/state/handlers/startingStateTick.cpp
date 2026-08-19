@@ -1,7 +1,6 @@
 #include <types/SystemState.h>
 #include <state/state.h>
-
-extern void setSystemState(SystemState);
+#include <state/fsm.h>
 
 void startingStateTick() {
     initState();

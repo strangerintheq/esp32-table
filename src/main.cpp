@@ -7,6 +7,7 @@
 #include <modules/storage/storage.h>
 #include <state/state.h>
 #include "state/fsm.h"
+#include "modules/server/ws.h"
 
 void setup() {
   Serial.begin(115200);
@@ -21,20 +22,14 @@ void setup() {
   initNetworkConfiguration();
   initNetwork();
   startWebServer();
-  //initState();
   initFsm();
   blink(5000);
 }
 
 void loop() {
+  fsmTick();
   networkTick();
   ledTick();
   steppersTick();
-  fsmTick();
-  
-
-  // Point p = points[pointIndex];
-  // movePolar(p.a, p.r);
-  // pointIndex = (pointIndex + 1) % points.size();
+  wsTick();
 }
-

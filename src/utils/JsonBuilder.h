@@ -11,64 +11,68 @@ private:
     bool hasElements;
 
     void appendComma() {
-        if (hasElements && offset < BufferSize - 1) {
+        if (hasElements && offset < BufferSize - 2) {
             buffer[offset++] = ',';
+        }
+    }
+
+    void inc(int written) {
+        if (written > 0) {
+            size_t nextOffset = offset + written;
+            if (nextOffset < BufferSize - 1) { 
+                offset = nextOffset;
+                hasElements = true;
+            } else {
+                buffer[offset] = '\0'; 
+            }
         }
     }
 
 public:
     JsonBuilder() {
+        clear();
+    }
+
+    // Полная очистка буфера
+    void clear() {
         buffer[0] = '{';
+        buffer[1] = '\0';
         offset = 1;
         hasElements = false;
     }
 
-    void inc(int written){
-        if (written > 0) {
-            offset += written;
-            hasElements = true;
-        }
-    }
-
     void append(const char* key, const char* value) {
         appendComma();
-        // Format as "key":"value" safely inside the remaining space
         inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":\"%s\"", key, value));
     }
 
-    void append(const char* key, String value) {
+    void append(const char* key, const String& value) {
         append(key, value.c_str());
     }
 
     void append(const char* key, long value) {
         appendComma();
-        // FIXED: Used "%ld" format specifier instead of "%d" for long integers
-         inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":%ld", key, value));
+        inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":%ld", key, value));
     }
 
     void append(const char* key, unsigned long value) {
         appendComma();
-        // Use "%lu" specifier for unsigned long values like millis() or heap sizes
         inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":%lu", key, value));
-    
     }
 
     void append(const char* key, int value) {
         appendComma();
-        // FIXED: Used dedicated "%d" for standard int to prevent recursive call loops
         inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":%d", key, value));
     }
 
     void append(const char* key, unsigned int value) {
         appendComma();
         inc(snprintf(buffer + offset, BufferSize - offset, "\"%s\":%u", key, value));
-
     }
 
     void append(const char* key, float value, int decimals = 2) {
         appendComma();
-        // Dynamically create float format specifier like "%.2f"
-        char floatFormat[10];
+        char floatFormat[16];
         snprintf(floatFormat, sizeof(floatFormat), "\"%%s\":%%.%df", decimals);
         inc(snprintf(buffer + offset, BufferSize - offset, floatFormat, key, value));
     }
@@ -77,6 +81,8 @@ public:
         if (offset < BufferSize - 1) {
             buffer[offset] = '}';
             buffer[offset + 1] = '\0';
+        } else if (BufferSize > 0) {
+            buffer[BufferSize - 1] = '\0';
         }
         return buffer;
     }

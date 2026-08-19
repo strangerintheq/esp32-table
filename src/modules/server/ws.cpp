@@ -2,8 +2,11 @@
 #include <utils/JsonBuilder.h>
 #include <modules/temp/temp.h>
 #include <state/state.h>
+#include "broadcaster.h"
 
 AsyncWebSocket ws("/ws"); 
+
+uint32_t lastBroadcastTimestamp = 0;
 
 void onWsEvent(
     AsyncWebSocket *server, 
@@ -15,10 +18,7 @@ void onWsEvent(
 ) {
     if (type == WS_EVT_CONNECT) {
         Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
-        JsonBuilder<128> b;
-        b.append("status", "connected");
-        b.append("targetPointIndex", targetPointIndex);
-        client->text(b.c_str());
+        client->text(broadcaster_getBroadcastMessage());
     } else if (type == WS_EVT_DISCONNECT) {
         Serial.printf("WebSocket client #%u disconnected\n", client->id());
     } else if (type == WS_EVT_DATA) {
@@ -30,23 +30,16 @@ void onWsEvent(
     }
 }
 
-void broadcast(String data) {
-    ws.cleanupClients();
-    ws.textAll(data.c_str());
-}
-
-void broadcastStatus() {
-    // Clean up disconnected clients from memory automatically
-    ws.cleanupClients();
-    JsonBuilder<256> b;
-    b.append("uptime", (millis() / 1000));
-    b.append("temp", getTemp(), 2);
-    b.append("freeHeap", ESP.getFreeHeap());
-    broadcast(b.c_str());
-}
-
 void initWs(AsyncWebServer* server) {
      ws.onEvent(onWsEvent);
      server->addHandler(&ws);
 }
 
+void wsTick() {
+    uint32_t now = millis();
+    if (now - lastBroadcastTimestamp < 1000)
+        return;
+    lastBroadcastTimestamp = now;    
+    ws.textAll(broadcaster_getBroadcastMessage());
+    ws.cleanupClients();
+}

@@ -1,6 +1,5 @@
 #include <types/SystemState.h>
-
-extern void setSystemState(SystemState);
+#include <state/fsm.h>
 
 void pausingStateTick() {
     setSystemState(SystemState::PAUSED);

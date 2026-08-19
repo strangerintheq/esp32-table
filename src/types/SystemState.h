@@ -13,6 +13,7 @@ enum SystemState {
     STOPPING,
     COMPLETED,
     ERROR,
+    REBOOTING
 };
 
 inline String systemStateName(SystemState state){

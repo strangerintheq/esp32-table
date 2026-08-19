@@ -8,10 +8,11 @@ void runningStateTick();
 void startingStateTick();
 void stoppingStateTick();
 void unpausingStateTick();
+void rebootingStateTick();
 
 inline void runHandlerTick(SystemState currentState) {
      switch (currentState) {
-         case SystemState::INITIALIZING:
+        case SystemState::INITIALIZING:
             return initializingStateTick();
         case SystemState::STARTING:
             return startingStateTick();
@@ -23,8 +24,8 @@ inline void runHandlerTick(SystemState currentState) {
             return stoppingStateTick();
         case SystemState::UNPAUSING:
             return unpausingStateTick();
- 
-            
+        case SystemState::REBOOTING:
+            return rebootingStateTick();
         default:
             break;    
     }

@@ -13,3 +13,5 @@ void initState();
 void steppersMoveFinished();
 
 void stateTick();
+
+void stopStateTicks();

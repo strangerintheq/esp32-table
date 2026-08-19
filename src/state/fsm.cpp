@@ -3,7 +3,7 @@
 #include "handlers/handlers.h"
 #include "logic/nextState.h"
 #include <modules/server/ws.h>
-#include <utils/JsonBuilder.h>
+#include <modules/server/broadcaster.h>
 
 SystemState currentState = SystemState::INITIALIZING;
 
@@ -11,11 +11,8 @@ QueueHandle_t signalQueue = nullptr;
 
 void setSystemState(SystemState state) {
     Serial.println("setSystemState: " + systemStateName(currentState) + " -> " + systemStateName(state));
-
     currentState = state;
-    JsonBuilder<64> b;
-    b.append("systemState", systemStateName(currentState));
-    broadcast(b.c_str());
+    broadcaster_setSystemState(state);
 }
 
 void initFsm() {
