@@ -1,11 +1,12 @@
 import * as React from 'preact';
 import { useNetworkStore } from '../../store/NetworkStore/useNetworkStore';
-import './NetworkSettings.css';
+import './Network.css';
 import {Input} from "../../components/Input/Input";
 import {Switch} from "../../components/Switch/Switch";
 import {JSX} from "preact";
+import {PageWrapper} from "../../components/PageWrapper/PageWrapper";
 
-export function NetworkSettings() {
+export function Network() {
     const {
         network_mode, wifi_ssid, wifi_password, ap_ssid, ap_password, isLoading, isSaved, error,
         toggleMode, setField, saveSettings
@@ -22,8 +23,7 @@ export function NetworkSettings() {
     let isAP = network_mode === "ap";
 
     return (
-        <div className="box max-wide compact-form">
-            <h2>Network Settings</h2>
+        <PageWrapper title={"Network"}>
             {error && <div className="error-msg">{error}</div>}
 
             <form onSubmit={handleSubmit}>
@@ -65,6 +65,6 @@ export function NetworkSettings() {
 
                 <button type="submit">Apply + Reboot</button>
             </form>
-        </div>
+        </PageWrapper>
     );
 }

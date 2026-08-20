@@ -3,6 +3,7 @@ import { useGeneratorStore } from '../../store/GeneratorStore/useGeneratorStore'
 import './Generator.css';
 import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 import {useEffect} from "preact/compat";
+import {PageWrapper} from "../../components/PageWrapper/PageWrapper";
 
 export function Generator() {
     const {
@@ -15,9 +16,7 @@ export function Generator() {
     }, [generatePoints]);
 
     return (
-        <div className="box max-wide compact-form">
-            <h2>Pattern Generator</h2>
-
+        <PageWrapper title={"Generator"}>
             <div className="floating-group">
                 <input
                     type="text"
@@ -77,6 +76,6 @@ export function Generator() {
                     {status}
                 </div>
             )}
-        </div>
+        </PageWrapper>
     );
 }

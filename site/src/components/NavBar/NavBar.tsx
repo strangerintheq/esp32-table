@@ -5,9 +5,10 @@ import { Link } from 'wouter';
 
 export function Navbar() {
     return <nav className="main-navbar">
-        <Navigation to="/">🖥️ Monitor</Navigation>
-        <Navigation to="/generator">🎲 Generator</Navigation>
-        <Navigation to="/network">⚙ Settings</Navigation>
+        <Navigation to="/">Monitor</Navigation>
+        <Navigation to="/gallery">Gallery</Navigation>
+        <Navigation to="/generator">Generator</Navigation>
+        <Navigation to="/network">Settings</Navigation>
     </nav>;
 }
 

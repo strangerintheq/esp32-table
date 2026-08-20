@@ -4,6 +4,7 @@ import {PreviewCanvas} from "../../components/PreviewCanvas/PreviewCanvas";
 import {sendRequest} from "../../utils/sendRequest";
 import {API} from "../../types/API";
 import {SystemState} from "../../types/SystemState";
+import {PageWrapper} from "../../components/PageWrapper/PageWrapper";
 
 export function LiveMonitor() {
     const {
@@ -13,8 +14,7 @@ export function LiveMonitor() {
         systemState
     } = useMonitorStore();
 
-    return <div className="box max-wide compact-form">
-        <h2>Live Monitor</h2>
+    return <PageWrapper title={"Monitor"}>
         <PreviewCanvas
             points={screenPoints}
             targetPointIndex={targetPointIndex}
@@ -28,7 +28,7 @@ export function LiveMonitor() {
             {canClear(systemState) && <button onClick={() => sendRequest(API.CLEAR)}>CLEAR</button>}
         </div>
 
-    </div>;
+    </PageWrapper>;
 }
 
 function canStart(systemState?: SystemState) {
